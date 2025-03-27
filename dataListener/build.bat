@@ -1,2 +1,2 @@
-call swig.exe -c++ -javascript -node ./myPackage.i
+call swig -c++ -javascript -node ./myPackage.i
 call node-gyp rebuild
