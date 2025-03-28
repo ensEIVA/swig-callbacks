@@ -1429,7 +1429,7 @@ static void _wrap_delete_Callback(const v8::WeakCallbackInfo<SWIGV8_Proxy> &data
 }
 
 
-static SwigV8ReturnValue _wrap_Callback_execute(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_Callback_run(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
   SWIGV8_VALUE jsresult;
@@ -1437,13 +1437,13 @@ static SwigV8ReturnValue _wrap_Callback_execute(const SwigV8Arguments &args) {
   void *argp1 = 0 ;
   int res1 = 0 ;
   
-  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Callback_execute.");
+  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Callback_run.");
   
   res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Callback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callback_execute" "', argument " "1"" of type '" "Callback *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callback_run" "', argument " "1"" of type '" "Callback *""'"); 
   }
-  arg1 = reinterpret_cast< Callback * >(argp1);(arg1)->execute();
+  arg1 = reinterpret_cast< Callback * >(argp1);(arg1)->run();
   jsresult = SWIGV8_UNDEFINED();
   
   
@@ -1455,10 +1455,21 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_new_veto_Callback(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_new_Callback(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
-  SWIG_exception(SWIG_ERROR, "Class Callback can not be instantiated");
+  SWIGV8_OBJECT self = args.Holder();
+  Callback *result;
+  if(self->InternalFieldCount() < 1) SWIG_exception_fail(SWIG_ERROR, "Illegal call of constructor _wrap_new_Callback.");
+  if(args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_new_Callback.");
+  result = (Callback *)new Callback();
+  
+  
+  
+  SWIGV8_SetPrivateData(self, result, SWIGTYPE_p_Callback, SWIG_POINTER_OWN);
+  SWIGV8_RETURN(self);
+  
+  goto fail;
 fail:
   SWIGV8_RETURN(SWIGV8_UNDEFINED());
 }
@@ -1492,6 +1503,32 @@ static void _wrap_delete_Caller(const v8::WeakCallbackInfo<SWIGV8_Proxy> &data) 
     delete arg1;
   }
   delete proxy;
+}
+
+
+static SwigV8ReturnValue _wrap_Caller_delCallback(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  SWIGV8_VALUE jsresult;
+  Caller *arg1 = (Caller *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_delCallback.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_delCallback" "', argument " "1"" of type '" "Caller *""'"); 
+  }
+  arg1 = reinterpret_cast< Caller * >(argp1);(arg1)->delCallback();
+  jsresult = SWIGV8_UNDEFINED();
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
 }
 
 
@@ -1927,7 +1964,8 @@ if (SWIGTYPE_p_Caller->clientdata == 0) {
 
 
   /* register wrapper functions */
-  SWIGV8_AddMemberFunction(_exports_Callback_class, "execute", _wrap_Callback_execute);
+  SWIGV8_AddMemberFunction(_exports_Callback_class, "run", _wrap_Callback_run);
+SWIGV8_AddMemberFunction(_exports_Caller_class, "delCallback", _wrap_Caller_delCallback);
 SWIGV8_AddMemberFunction(_exports_Caller_class, "setCallback", _wrap_Caller_setCallback);
 SWIGV8_AddMemberFunction(_exports_Caller_class, "resetCallback", _wrap_Caller_resetCallback);
 SWIGV8_AddMemberFunction(_exports_Caller_class, "call", _wrap_Caller_call);
@@ -1939,7 +1977,7 @@ SWIGV8_AddMemberFunction(_exports_Caller_class, "call", _wrap_Caller_call);
   /* class instances */
   /* Class: Callback (_exports_Callback) */
 SWIGV8_FUNCTION_TEMPLATE _exports_Callback_class_0 = SWIGV8_CreateClassTemplate("Callback");
-_exports_Callback_class_0->SetCallHandler(_wrap_new_veto_Callback);
+_exports_Callback_class_0->SetCallHandler(_wrap_new_Callback);
 _exports_Callback_class_0->Inherit(_exports_Callback_class);
 v8::Local<v8::Object> _exports_Callback_obj = _exports_Callback_class_0->GetFunction(context).ToLocalChecked();
 /* Class: Caller (_exports_Caller) */

@@ -1,50 +1,34 @@
-#pragma once
+/* File : callback.h */
+
+#include <cstdio>
 #include <iostream>
 
 class Callback {
 public:
-    Callback() {
-        std::cout << "C++: Callback constructor" << std::endl;
-    }
-    
-    virtual ~Callback() {
-        std::cout << "C++: Callback destructor" << std::endl;
-    }
-    
-    // Pure virtual method to be implemented by derived classes
-    virtual void execute() = 0;
+	virtual ~Callback() { std::cout << "Callback::~Callback()" << std:: endl; }
+	virtual void run() { std::cout << "c++ Callback::run()" << std::endl; }
 };
+
 
 class Caller {
 private:
-    Callback* currentCallback;
-
+	Callback *_callback;
 public:
-    Caller() : currentCallback(nullptr) {
-        std::cout << "C++: Caller constructor" << std::endl;
-    }
-    
-    ~Caller() {
-        std::cout << "C++: Caller destructor" << std::endl;
-        resetCallback();
-    }
-    
-    void setCallback(Callback* callback) {
-        std::cout << "C++: Setting callback" << std::endl;
-        currentCallback = callback;
-    }
-    
-    void resetCallback() {
-        std::cout << "C++: Resetting callback" << std::endl;
-        currentCallback = nullptr;
-    }
-    
-    void call() {
-        if (currentCallback) {
-            std::cout << "C++: Calling callback" << std::endl;
-            currentCallback->execute();
+	Caller(): _callback(0) {}
+	~Caller() { delCallback(); }
+	void delCallback() { delete _callback; _callback = 0; }
+    void setCallback(Callback *cb) 
+    { 
+        std::cout << "Caller::setCallback()" << std::endl;
+        if (cb) {
+            std::cout << "Callback address: " << cb << std::endl;
+            cb->run();
         } else {
-            std::cout << "C++: No callback set" << std::endl;
+            std::cout << "Callback is null" << std::endl;
         }
+        delCallback(); 
+        _callback = cb; 
     }
+	void resetCallback() { _callback = 0; }
+	void call() {  _callback->run(); }
 };

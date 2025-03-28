@@ -1,10 +1,9 @@
-%module callback
-
+%module(directors="1") callback
 %{
 #include "callback.h"
 %}
 
-// Enable directors for polymorphic behavior
+// Ensure director feature is explicitly applied
 %feature("director") Callback;
 
 // Include the header
