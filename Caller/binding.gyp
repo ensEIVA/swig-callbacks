@@ -1,13 +1,11 @@
 {
     "targets": [
         {
-            "target_name": "callback",
-            "sources": [
-                "callback.cpp",
-                "callback_wrap.cxx"
-            ],
+            "target_name": "Callback",
+            "sources": [ "callback_wrap.cxx", "callback.cpp" ],
             "include_dirs": [
-                "<!(node -e \"require('node-addon-api')\")"
+                "<!(node -e \"require('node-addon-api')\")",
+                '.'
             ],
             "cflags!": ["-fno-exceptions"],
             "cflags_cc!": ["-fno-exceptions"],

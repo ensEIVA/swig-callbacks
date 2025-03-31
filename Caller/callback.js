@@ -1,22 +1,19 @@
-// callback.js
-const pkg = require("./build/Release/callback");
+const addon = require("./build/Release/Callback");
 
-class CustomCallback extends pkg.Callback {
+class CustomCallback extends addon.Callback {
   constructor() {
     super();
     console.log("JS: CustomCallback constructor");
   }
   
   run() {
-    console.log("JS: Executing CUSTOM JavaScript callback");
+    console.log("JS: CustomCallback run method called");
   }
 }
 
 console.log("JS: Creating Caller");
-const caller = new pkg.Caller();
+const caller = new addon.Caller();
 const customCallback = new CustomCallback();
 
-// Pass the entire callback object, not just the method
-caller.setCallback(customCallback);
-caller.call();
-caller.resetCallback();
+caller.call(customCallback);
+

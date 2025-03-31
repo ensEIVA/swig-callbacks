@@ -1,10 +1,14 @@
-%module(directors="1") callback
+%module Callback
+
 %{
 #include "callback.h"
 %}
 
-// Ensure director feature is explicitly applied
+// Enable director feature for the Callback class
 %feature("director") Callback;
 
-// Include the header
+// Include standard SWIG JavaScript typemaps
+%include "std_string.i"
+
+// Include the headers
 %include "callback.h"
