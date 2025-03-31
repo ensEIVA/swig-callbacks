@@ -1,17 +1,22 @@
-const pkg = require('./build/Release/myPackage');
+const example = require('./build/Release/myPackage');
 
-console.log(pkg);
+// Create a data reader
+const dataReader = new example.DataReader();
+console.log(dataReader.getMessage());
 
-class MyDataListener extends pkg.DataReaderListener {
-    constructor() {
-        super();
-    }
-    on_data_available(reader) {
-        console.log('Data received:', reader);
-        super.on_data_available(reader);
-    }
-}
+// Create a JavaScript listener
+const jsListener1 = new example.JSCallbackDataReaderListener();
+const testCallback1 = (reader) => {
+    console.log(reader.getMessage() + '--------jsListener1 callback executed!');
+};
+jsListener1.SetCallback_on_data_available(() => testCallback1(dataReader));
 
-const myDataListener = new MyDataListener();
-const dataReader = new pkg.DataReader();
-dataReader.simulateDataAvailable(myDataListener);
+const jsListener2 = new example.JSCallbackDataReaderListener();
+const testCallback2 = (reader) => {
+    console.log(reader.getMessage() + '--------jsListener2 callback executed!');
+};
+jsListener2.SetCallback_on_data_available(() => testCallback2(dataReader));
+
+// Use the listener with the data reader
+dataReader.simulateDataAvailable(jsListener1);
+dataReader.simulateDataAvailable(jsListener2);

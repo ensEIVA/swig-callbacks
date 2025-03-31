@@ -1,8 +1,11 @@
 #pragma once
+#include <string>
 
 class DataReaderListener;
 class DataReader
 {
+private:
+    std::string message = "Hello, World!";
 public:
     /**
      * @brief Constructor
@@ -19,4 +22,8 @@ public:
     }
 
     void simulateDataAvailable(DataReaderListener *listener);
+    std::string getMessage()
+    {
+        return message;
+    }
 };
