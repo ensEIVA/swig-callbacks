@@ -1,64 +1,6 @@
 %{
 #include "dataReader.h"
 #include "dataReaderListener.h"
-#include <v8.h>
-#include <map>
-#include <memory>
-
-// Store callbacks in a map keyed by listener instance
-std::map<void*, std::shared_ptr<v8::Persistent<v8::Function>>> g_callbackMap;
-
-void runJSCallbackArg(DataReader* reader, void* listenerPtr) {
-    // Find the callback for this listener instance
-    auto it = g_callbackMap.find(listenerPtr);
-    if (it == g_callbackMap.end() || !it->second) {
-        return;
-    }
-
-    auto& callback = it->second;
-    
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
-    v8::HandleScope handle_scope(isolate);
-    
-    v8::Local<v8::Context> context = isolate->GetCurrentContext();
-    v8::Local<v8::Function> cb = v8::Local<v8::Function>::New(isolate, *callback);
-    
-    if (cb.IsEmpty()) {
-        return;
-    }
-
-    v8::TryCatch try_catch(isolate);
-
-    // Call the JavaScript function
-    // Note: We could pass the reader as an argument if needed
-    cb->Call(context, context->Global(), 0, nullptr);
-
-    if (try_catch.HasCaught()) {
-        v8::String::Utf8Value exception(isolate, try_catch.Exception());
-        fprintf(stderr, "JavaScript exception: %s\n", *exception);
-    }
-}
-
-// Helper function to register a callback for a specific listener instance
-void registerCallback(void* listenerPtr, v8::Local<v8::Function> callback) {
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
-    
-    // Create a persistent handle to the callback function
-    auto persistent = std::make_shared<v8::Persistent<v8::Function>>(
-        isolate, callback);
-    
-    // Store in our map
-    g_callbackMap[listenerPtr] = persistent;
-}
-
-// Helper function to unregister a callback
-void unregisterCallback(void* listenerPtr) {
-    auto it = g_callbackMap.find(listenerPtr);
-    if (it != g_callbackMap.end()) {
-        it->second->Reset();
-        g_callbackMap.erase(it);
-    }
-}
 %}
 
 // Include the original headers
@@ -66,45 +8,33 @@ void unregisterCallback(void* listenerPtr) {
 %include "dataReader.h"
 
 // Custom SWIG typemap to handle JavaScript callbacks
-%typemap(in) std::function<void(DataReader*)> {
-    if (args.Length() == 0 || !args[0]->IsFunction()) {
+%typemap(in) v8::Local<v8::Function> jsCallback {
+    if (!$input->IsFunction()) {
         SWIG_exception_fail(SWIG_TypeError, "Expected a JavaScript function");
     }
-
-    // Get the 'this' pointer from the info
-    void* listenerPtr = nullptr;
-    int res = SWIG_ConvertPtr(args.Holder(), &listenerPtr, SWIGTYPE_p_JSCallbackDataReaderListener, 0);
-    if (!SWIG_IsOK(res)) {
-        SWIG_exception_fail(SWIG_ERROR, "Could not get listener pointer");
-    }
-    
-    // Register the callback for this listener instance
-    registerCallback(listenerPtr, v8::Local<v8::Function>::Cast(args[0]));
-    
-    // Create a lambda that will call the right callback
-    $1 = [listenerPtr](DataReader* reader) {
-        runJSCallbackArg(reader, listenerPtr);
-    };
+    $1 = v8::Local<v8::Function>::Cast($input);
 }
-
-// Add a destructor handler to clean up callbacks
-%feature("destructor", "unregisterCallback($self);") JSCallbackDataReaderListener;
 
 // Add our extension functions
 %inline %{
-    #include <functional>
     #include "dataReader.h"
     #include "dataReaderListener.h"
+    #include <v8.h>
 
-    // Simple proxy listener for JavaScript callbacks
+    // Improved listener for JavaScript callbacks
     class JSCallbackDataReaderListener : public DataReaderListener {
     private:
-        std::function<void(DataReader*)> m_callback;
+        v8::Isolate* m_isolate;
+        v8::Persistent<v8::Function> m_callback;
+        bool m_hasCallback;
+
     public:
-        JSCallbackDataReaderListener() {}
+        JSCallbackDataReaderListener() : m_isolate(nullptr), m_hasCallback(false) {}
         
         virtual ~JSCallbackDataReaderListener() {
-            // Cleanup happens in the destructor handler
+            if (m_hasCallback) {
+                m_callback.Reset();
+            }
         }
     
         // Override the virtual method
@@ -113,14 +43,36 @@ void unregisterCallback(void* listenerPtr) {
             DataReaderListener::on_data_available(reader);
             
             // Call the JavaScript callback if set
-            if (m_callback) {
-                m_callback(reader);
+            if (m_hasCallback && m_isolate) {
+                v8::HandleScope handle_scope(m_isolate);
+                v8::Local<v8::Context> context = m_isolate->GetCurrentContext();
+                v8::Local<v8::Function> callback = v8::Local<v8::Function>::New(m_isolate, m_callback);
+                
+                v8::TryCatch try_catch(m_isolate);
+                
+                // Call the JavaScript function
+                // You could pass reader as argument if needed
+                callback->Call(context, context->Global(), 0, nullptr);
+                
+                if (try_catch.HasCaught()) {
+                    v8::String::Utf8Value exception(m_isolate, try_catch.Exception());
+                    fprintf(stderr, "JavaScript callback exception: %s\n", *exception);
+                }
             }
         }
         
-        // Method to set the callback
-        void SetCallback_on_data_available(std::function<void(DataReader*)> callback) {
-            m_callback = callback;
-        }    
+        // Method to set the callback - now takes a V8 function directly
+        void SetCallback_on_data_available(v8::Local<v8::Function> jsCallback) {
+            // Clear any existing callback
+            if (m_hasCallback) {
+                m_callback.Reset();
+                m_hasCallback = false;
+            }
+            
+            // Store the new callback
+            m_isolate = v8::Isolate::GetCurrent();
+            m_callback.Reset(m_isolate, jsCallback);
+            m_hasCallback = true;
+        }
     };
 %}
