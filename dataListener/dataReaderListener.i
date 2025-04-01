@@ -1,11 +1,8 @@
 %{
-#include "dataReader.h"
 #include "dataReaderListener.h"
 %}
 
-// Include the original headers
 %include "dataReaderListener.h"
-%include "dataReader.h"
 
 // Custom SWIG typemap to handle JavaScript callbacks
 %typemap(in) v8::Local<v8::Function> jsCallback {
@@ -25,15 +22,14 @@
     class JSCallbackDataReaderListener : public DataReaderListener {
     private:
         v8::Isolate* m_isolate;
-        v8::Persistent<v8::Function> m_callback;
-        bool m_hasCallback;
+        v8::Persistent<v8::Function> m_callback_on_data_available;
 
     public:
-        JSCallbackDataReaderListener() : m_isolate(nullptr), m_hasCallback(false) {}
+        JSCallbackDataReaderListener() : m_isolate(nullptr) {}
         
         virtual ~JSCallbackDataReaderListener() {
-            if (m_hasCallback) {
-                m_callback.Reset();
+            if (!m_callback_on_data_available.IsEmpty()) {
+                m_callback_on_data_available.Reset();
             }
         }
     
@@ -43,10 +39,10 @@
             DataReaderListener::on_data_available(reader);
             
             // Call the JavaScript callback if set
-            if (m_hasCallback && m_isolate) {
+            if (!m_callback_on_data_available.IsEmpty() && m_isolate) {
                 v8::HandleScope handle_scope(m_isolate);
                 v8::Local<v8::Context> context = m_isolate->GetCurrentContext();
-                v8::Local<v8::Function> callback = v8::Local<v8::Function>::New(m_isolate, m_callback);
+                v8::Local<v8::Function> callback = v8::Local<v8::Function>::New(m_isolate, m_callback_on_data_available);
                 
                 v8::TryCatch try_catch(m_isolate);
                 
@@ -64,15 +60,13 @@
         // Method to set the callback - now takes a V8 function directly
         void SetCallback_on_data_available(v8::Local<v8::Function> jsCallback) {
             // Clear any existing callback
-            if (m_hasCallback) {
-                m_callback.Reset();
-                m_hasCallback = false;
+            if (!m_callback_on_data_available.IsEmpty()) {
+                m_callback_on_data_available.Reset();
             }
             
             // Store the new callback
             m_isolate = v8::Isolate::GetCurrent();
-            m_callback.Reset(m_isolate, jsCallback);
-            m_hasCallback = true;
+            m_callback_on_data_available.Reset(m_isolate, jsCallback);
         }
     };
 %}
