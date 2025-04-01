@@ -1411,7 +1411,10 @@ template <typename T> T SwigValueInit() {
 #include "callback.h"
 
 
-#define SWIGV8_INIT callback_initialize
+#include <string>
+
+
+#define SWIGV8_INIT Callback_initialize
 
 
 SWIGV8_ClientData _exports_Callback_clientData;
@@ -1455,19 +1458,42 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_new_Callback(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_new_veto_Callback(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
-  SWIGV8_OBJECT self = args.Holder();
-  Callback *result;
-  if(self->InternalFieldCount() < 1) SWIG_exception_fail(SWIG_ERROR, "Illegal call of constructor _wrap_new_Callback.");
-  if(args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_new_Callback.");
-  result = (Callback *)new Callback();
+  SWIG_exception(SWIG_ERROR, "Class Callback can not be instantiated");
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_Caller_call(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  SWIGV8_VALUE jsresult;
+  Caller *arg1 = (Caller *) 0 ;
+  Callback *arg2 = (Callback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  
+  if (args.Length() < 1 || args.Length() > 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_call.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_call" "', argument " "1"" of type '" "Caller *""'"); 
+  }
+  arg1 = reinterpret_cast< Caller * >(argp1);res2 = SWIG_ConvertPtr(args[0], &argp2,SWIGTYPE_p_Callback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Caller_call" "', argument " "2"" of type '" "Callback *""'"); 
+  }
+  arg2 = reinterpret_cast< Callback * >(argp2);(arg1)->call(arg2);
+  jsresult = SWIGV8_UNDEFINED();
   
   
   
-  SWIGV8_SetPrivateData(self, result, SWIGTYPE_p_Callback, SWIG_POINTER_OWN);
-  SWIGV8_RETURN(self);
+  SWIGV8_RETURN(jsresult);
   
   goto fail;
 fail:
@@ -1503,118 +1529,6 @@ static void _wrap_delete_Caller(const v8::WeakCallbackInfo<SWIGV8_Proxy> &data) 
     delete arg1;
   }
   delete proxy;
-}
-
-
-static SwigV8ReturnValue _wrap_Caller_delCallback(const SwigV8Arguments &args) {
-  SWIGV8_HANDLESCOPE();
-  
-  SWIGV8_VALUE jsresult;
-  Caller *arg1 = (Caller *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_delCallback.");
-  
-  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_delCallback" "', argument " "1"" of type '" "Caller *""'"); 
-  }
-  arg1 = reinterpret_cast< Caller * >(argp1);(arg1)->delCallback();
-  jsresult = SWIGV8_UNDEFINED();
-  
-  
-  SWIGV8_RETURN(jsresult);
-  
-  goto fail;
-fail:
-  SWIGV8_RETURN(SWIGV8_UNDEFINED());
-}
-
-
-static SwigV8ReturnValue _wrap_Caller_setCallback(const SwigV8Arguments &args) {
-  SWIGV8_HANDLESCOPE();
-  
-  SWIGV8_VALUE jsresult;
-  Caller *arg1 = (Caller *) 0 ;
-  Callback *arg2 = (Callback *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  
-  if (args.Length() < 1 || args.Length() > 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_setCallback.");
-  
-  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_setCallback" "', argument " "1"" of type '" "Caller *""'"); 
-  }
-  arg1 = reinterpret_cast< Caller * >(argp1);res2 = SWIG_ConvertPtr(args[0], &argp2,SWIGTYPE_p_Callback, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Caller_setCallback" "', argument " "2"" of type '" "Callback *""'"); 
-  }
-  arg2 = reinterpret_cast< Callback * >(argp2);(arg1)->setCallback(arg2);
-  jsresult = SWIGV8_UNDEFINED();
-  
-  
-  
-  SWIGV8_RETURN(jsresult);
-  
-  goto fail;
-fail:
-  SWIGV8_RETURN(SWIGV8_UNDEFINED());
-}
-
-
-static SwigV8ReturnValue _wrap_Caller_resetCallback(const SwigV8Arguments &args) {
-  SWIGV8_HANDLESCOPE();
-  
-  SWIGV8_VALUE jsresult;
-  Caller *arg1 = (Caller *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_resetCallback.");
-  
-  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_resetCallback" "', argument " "1"" of type '" "Caller *""'"); 
-  }
-  arg1 = reinterpret_cast< Caller * >(argp1);(arg1)->resetCallback();
-  jsresult = SWIGV8_UNDEFINED();
-  
-  
-  SWIGV8_RETURN(jsresult);
-  
-  goto fail;
-fail:
-  SWIGV8_RETURN(SWIGV8_UNDEFINED());
-}
-
-
-static SwigV8ReturnValue _wrap_Caller_call(const SwigV8Arguments &args) {
-  SWIGV8_HANDLESCOPE();
-  
-  SWIGV8_VALUE jsresult;
-  Caller *arg1 = (Caller *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if (args.Length() < 0 || args.Length() > 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Caller_call.");
-  
-  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Caller, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Caller_call" "', argument " "1"" of type '" "Caller *""'"); 
-  }
-  arg1 = reinterpret_cast< Caller * >(argp1);(arg1)->call();
-  jsresult = SWIGV8_UNDEFINED();
-  
-  
-  SWIGV8_RETURN(jsresult);
-  
-  goto fail;
-fail:
-  SWIGV8_RETURN(SWIGV8_UNDEFINED());
 }
 
 
@@ -1965,9 +1879,6 @@ if (SWIGTYPE_p_Caller->clientdata == 0) {
 
   /* register wrapper functions */
   SWIGV8_AddMemberFunction(_exports_Callback_class, "run", _wrap_Callback_run);
-SWIGV8_AddMemberFunction(_exports_Caller_class, "delCallback", _wrap_Caller_delCallback);
-SWIGV8_AddMemberFunction(_exports_Caller_class, "setCallback", _wrap_Caller_setCallback);
-SWIGV8_AddMemberFunction(_exports_Caller_class, "resetCallback", _wrap_Caller_resetCallback);
 SWIGV8_AddMemberFunction(_exports_Caller_class, "call", _wrap_Caller_call);
 
 
@@ -1977,7 +1888,7 @@ SWIGV8_AddMemberFunction(_exports_Caller_class, "call", _wrap_Caller_call);
   /* class instances */
   /* Class: Callback (_exports_Callback) */
 SWIGV8_FUNCTION_TEMPLATE _exports_Callback_class_0 = SWIGV8_CreateClassTemplate("Callback");
-_exports_Callback_class_0->SetCallHandler(_wrap_new_Callback);
+_exports_Callback_class_0->SetCallHandler(_wrap_new_veto_Callback);
 _exports_Callback_class_0->Inherit(_exports_Callback_class);
 v8::Local<v8::Object> _exports_Callback_obj = _exports_Callback_class_0->GetFunction(context).ToLocalChecked();
 /* Class: Caller (_exports_Caller) */
@@ -2001,8 +1912,8 @@ SWIGV8_MAYBE_CHECK(exports_obj->Set(context, SWIGV8_SYMBOL_NEW("Caller"), _expor
 
 #if defined(BUILDING_NODE_EXTENSION)
 #if (NODE_MODULE_VERSION < 64)
-NODE_MODULE(callback, callback_initialize)
+NODE_MODULE(Callback, Callback_initialize)
 #else
-NODE_MODULE_CONTEXT_AWARE(callback, callback_initialize)
+NODE_MODULE_CONTEXT_AWARE(Callback, Callback_initialize)
 #endif
 #endif
